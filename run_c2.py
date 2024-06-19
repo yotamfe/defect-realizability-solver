@@ -1,6 +1,7 @@
 import numpy as np
 import itertools
 import random
+import argparse
 
 import pysat
 from pysat.formula import CNF, And, Or, XOr, Neg, Atom, PYSAT_TRUE
@@ -177,9 +178,17 @@ def run_realization(lattice_length, random_dislocation_probability):
     lattice.save_to_file('latest_lattice.txt')
 
 def main():
-    num_tries = 1
-    lattice_length = 4
-    probability = 0.1
+    parser = argparse.ArgumentParser(prog='run_c2',
+                                     description='Try to find cell alignments that satisfy '
+                                                 'a random dislocation pattern on a lattice')
+    parser.add_argument('-l', '--length')
+    parser.add_argument('-n', '--num_tries')
+    parser.add_argument('-p', '--probability')
+
+    args = parser.parse_args()
+    lattice_length = int(args.length)
+    probability = float(args.probability)
+    num_tries = int(args.num_tries)
 
     probability_percent = str(probability * 100.0)
     print(f"Running {num_tries} realizations of size {lattice_length}x{lattice_length}x{lattice_length} "
