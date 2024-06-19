@@ -133,6 +133,7 @@ class LatticeC2DislocationLogic:
     def _constrain_cell_single_assignment(self, cell):
         cell_alignments_vars = [self._cell_alignment_var(cell, alignment)
                                     for alignment in self._lattice.cell_alignments()]
+        # TODO: try pysat's cardinality encoding
         # cell_assignment_vars_ids = [a.name for a in cell_alignments_vars]
         # exactly_one = pysat.card.CardEnc.equals(cell_assignment_vars_ids, bound=1, encoding=pysat.card.EncType.pairwise)
         # exactly_one_cnf = CNF(from_clauses=exactly_one.clauses)
@@ -156,6 +157,7 @@ class LatticeC2DislocationLogic:
         adjacent_alignments = self._lattice.edge_adjacent_alignments(edge)
         adjacent_alignment_vars = [self._cell_alignment_var(cell, alignment)
                                    for (cell, alignment) in adjacent_alignments]
+        # TODO: try xor with true
         # self._constraints_formulas.append(XOr(*adjacent_alignment_vars, PYSAT_TRUE))
         self._constraints_formulas.append(Neg(XOr(*adjacent_alignment_vars)))
 
