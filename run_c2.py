@@ -1,48 +1,7 @@
 import argparse
 
+from c2 import C2Lattice
 import run_common
-
-from dislocation_structure import Lattice
-
-class C2Lattice(Lattice):
-    def __init__(self, x_length, y_length, z_length):
-        super().__init__(x_length, y_length, z_length)
-        self._alignments = [0, 1, 2]
-
-    def cell_alignments(self):
-        return self._alignments
-
-    def edge_adjacent_alignments(self, edge):
-        x, y, z, a = edge
-        if a == 0:
-            assert y < self._y_length - 1
-            assert z < self._z_length - 1
-            return [((x, y, z), a),
-                    ((x, y + 1, z), a),
-                    ((x, y, z + 1), a),
-                    ((x, y + 1, z + 1), a)]
-        if a == 1:
-            assert x < self._x_length - 1
-            assert z < self._z_length - 1
-            return [((x, y, z), a),
-                    ((x + 1, y, z), a),
-                    ((x, y, z + 1), a),
-                    ((x + 1, y, z + 1), a)]
-        assert a == 2
-        assert x < self._x_length - 1
-        assert y < self._y_length - 1
-        return [((x, y, z), a),
-                ((x + 1, y, z), a),
-                ((x, y + 1, z), a),
-                ((x + 1, y + 1, z), a)]
-
-    def save_to_file(self, path):
-        with open(path, "wt") as f:
-            f.write(f"{self._x_length} {self._y_length} {self._z_length}\n")
-            for edge in self.iter_edges():
-                constraint = "Odd" if self.is_dislocation(edge) else "Even"
-                x, y, z, a = edge
-                f.write(f"{x} {y} {z} {constraint}\n")
 
 def main():
     parser = argparse.ArgumentParser(prog='run_c2',
