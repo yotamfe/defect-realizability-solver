@@ -67,7 +67,7 @@ class Lattice:
             if random.random() < random_dislocation_probability:
                 self._dislocations_edgeset.add(edge)
 
-        self._try_make_even_num_dislocations_per_cell()
+        self._make_even_num_dislocations_per_cell()
 
     def _iter_internal_cells(self):
         return itertools.product(range(self._x_length - 1), range(self._y_length - 1), range(self._z_length - 1))
@@ -89,7 +89,7 @@ class Lattice:
         else:
             self._dislocations_edgeset.add(edge)
 
-    def _try_make_even_num_dislocations_per_cell(self):
+    def _make_even_num_dislocations_per_cell(self):
         for cell in self._iter_internal_cells():
             if self._has_even_num_of_dislocations(cell):
                 continue
