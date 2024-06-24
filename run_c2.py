@@ -164,7 +164,6 @@ class LatticeC2DislocationLogic:
 
 def run_realization(lattice_length, random_dislocation_probability):
     lattice = Lattice(lattice_length, lattice_length, lattice_length)
-    # TODO: restore
     lattice.generate_dislocation_assignment(random_dislocation_probability)
 
     sat_rep = LatticeC2DislocationLogic(lattice)
