@@ -10,7 +10,7 @@ def exactly_one(*formulas):
                         for f1, f2 in itertools.combinations(formulas, 2)])
     return And(at_least_one, at_most_one)
 
-class LatticeC2DislocationLogic:
+class LatticeDislocationLogic:
     def __init__(self, lattice):
         self._lattice = lattice
         self._constraints_formulas = []

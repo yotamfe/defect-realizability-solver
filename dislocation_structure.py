@@ -1,13 +1,13 @@
 import numpy as np
 import itertools
 import random
+from abc import ABC, abstractmethod
 
-class Lattice:
+class Lattice(ABC):
     def __init__(self, x_length, y_length, z_length):
         self._x_length = x_length
         self._y_length = y_length
         self._z_length = z_length
-        self._alignments = [0, 1, 2]
 
         # A cell is identified by the (x,y,z) coordinates of its left lower vertex.
         # An edge is identified by the (x,y,z) coordinates of the vertex where it starts
@@ -16,8 +16,9 @@ class Lattice:
 
         self._dislocations_edgeset = set()
 
+    @abstractmethod
     def cell_alignments(self):
-        return self._alignments
+        pass
 
     def iter_cells(self):
         return itertools.product(range(self._x_length), range(self._y_length), range(self._z_length))
@@ -32,6 +33,7 @@ class Lattice:
     def is_dislocation(self, edge):
         return edge in self._dislocations_edgeset
 
+    @abstractmethod
     def edge_adjacent_alignments(self, edge):
         x, y, z, a = edge
         if a == 0:

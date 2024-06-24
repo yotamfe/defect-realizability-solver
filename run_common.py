@@ -4,13 +4,12 @@ import itertools
 import pysat
 import pysat.solvers
 
-from dislocation_structure import Lattice
+from dislocation_logic import LatticeDislocationLogic
 
-def run_realization(lattice_length, random_dislocation_probability, dislocation_logic_factory):
-    lattice = Lattice(lattice_length, lattice_length, lattice_length)
+def run_realization(lattice, random_dislocation_probability):
     lattice.generate_dislocation_assignment(random_dislocation_probability)
 
-    sat_rep = dislocation_logic_factory(lattice)
+    sat_rep = LatticeDislocationLogic(lattice)
 
     s = pysat.solvers.Minisat22()
     s.append_formula(sat_rep.constraints_cnf())
@@ -22,7 +21,7 @@ def run_realization(lattice_length, random_dislocation_probability, dislocation_
 
     lattice.save_to_file('latest_lattice.txt')
 
-def go(lattice_length, probability, num_tries, dislocation_logic_factory):
+def go(lattice, probability, num_tries):
     for i in range(num_tries):
         print("Running realization", i)
-        run_realization(lattice_length, probability, dislocation_logic_factory)
+        run_realization(lattice, probability)
