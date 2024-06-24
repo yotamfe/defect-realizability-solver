@@ -92,10 +92,6 @@ class Lattice(ABC):
             x, y, z = cell
             self._toggle_dislocation((x + 1, y, z, 0))
 
+    @abstractmethod
     def save_to_file(self, path):
-        with open(path, "wt") as f:
-            f.write(f"{self._x_length} {self._y_length} {self._z_length}\n")
-            for edge in self.iter_edges():
-                constraint = "Odd" if self.is_dislocation(edge) else "Even"
-                x, y, z, a = edge
-                f.write(f"{x} {y} {z} {constraint}\n")
+        pass

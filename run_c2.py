@@ -36,6 +36,14 @@ class C2Lattice(Lattice):
                 ((x, y + 1, z), a),
                 ((x + 1, y + 1, z), a)]
 
+    def save_to_file(self, path):
+        with open(path, "wt") as f:
+            f.write(f"{self._x_length} {self._y_length} {self._z_length}\n")
+            for edge in self.iter_edges():
+                constraint = "Odd" if self.is_dislocation(edge) else "Even"
+                x, y, z, a = edge
+                f.write(f"{x} {y} {z} {constraint}\n")
+
 def main():
     parser = argparse.ArgumentParser(prog='run_c2',
                                      description='Try to find cell alignments that satisfy '
