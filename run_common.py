@@ -32,11 +32,34 @@ def solve(lattice):
     if is_sat:
         print("Solution found")
         cell_assignment = sat_rep.read_cell_assignment(s.get_model())
-        for k, v in cell_assignment.items():
-            print(k, v)
+        write_satisfying_assignment(cell_assignment, lattice)
+
         verify_assignment(lattice, cell_assignment)
     else:
         print("No solution")
+
+
+def write_satisfying_assignment(cell_assignment, lattice):
+    with open("latest_model.txt", "wt") as f:
+        for k, v in cell_assignment.items():
+            f.write(f"{k} {v}\n")
+        f.write("\n")
+        for edge in lattice.iter_edges():
+            dislocation_expected = "Dislocation" if lattice.is_dislocation(edge) else "Normal"
+            f.write(f"{edge}: {dislocation_expected}\n")
+            adjacent_alignment_blocks = lattice.edge_adjacent_alignment_blocks(edge)
+            for block in adjacent_alignment_blocks:
+                truthifying_cells = [(cell, alignment) for (cell, alignment) in block
+                                     if cell_assignment[cell] == alignment]
+                if truthifying_cells == []:
+                    cells_in_block = [cell for (cell, alignment) in block]
+                    assert len(set(cells_in_block)) == 1 # (true for c6 becusae a block always involves just one cell)
+                    falsifying_cell = cells_in_block[0]
+                    falsifying_assignment = cell_assignment[falsifying_cell]
+                    f.write(f"\tFalse:\t{falsifying_cell}={falsifying_assignment}\n")
+                else:
+                    truthifying_cell, truthifying_alignment = truthifying_cells[0]
+                    f.write(f"\tTrue:\t{truthifying_cell}={truthifying_alignment}\n")
 
 
 def go(lattice, probability, num_tries):
