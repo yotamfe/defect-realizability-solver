@@ -19,9 +19,9 @@ def verify_assignment(lattice, cell_assignment):
         edge_parity = len([(cell, alignment) for (cell, alignment) in adjacent_alignments
                            if cell_assignment[cell] == alignment]) % 2
         if lattice.is_dislocation(edge):
-            assert edge_parity == 0, "Expected dislocation in edge %s but found even number adjacent" % edge
+            assert edge_parity != 0, "Expected dislocation in edge %s but found even number adjacent" % edge
         else:
-            assert edge_parity != 0, "Expected normal in edge %s but found odd number adjacent" % edge
+            assert edge_parity == 0, "Expected normal in edge %s but found odd number adjacent" % edge
 
 def solve(lattice):
     sat_rep = LatticeDislocationLogic(lattice)

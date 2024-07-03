@@ -72,12 +72,13 @@ class LatticeDislocationLogic:
         adjacent_alignments = self._lattice.edge_adjacent_alignments(edge)
         adjacent_alignment_vars = [self._cell_alignment_var(cell, alignment)
                                     for (cell, alignment) in adjacent_alignments]
-        self._constraints_formulas.append(XOr(*adjacent_alignment_vars))
+        # TODO: try xor with true
+        # self._constraints_formulas.append(XOr(*adjacent_alignment_vars, PYSAT_TRUE))
+        self._constraints_formulas.append(Neg(XOr(*adjacent_alignment_vars)))
 
     def _constrain_dislocation(self, edge):
         adjacent_alignments = self._lattice.edge_adjacent_alignments(edge)
         adjacent_alignment_vars = [self._cell_alignment_var(cell, alignment)
                                    for (cell, alignment) in adjacent_alignments]
-        # TODO: try xor with true
-        # self._constraints_formulas.append(XOr(*adjacent_alignment_vars, PYSAT_TRUE))
-        self._constraints_formulas.append(Neg(XOr(*adjacent_alignment_vars)))
+        self._constraints_formulas.append(XOr(*adjacent_alignment_vars))
+
