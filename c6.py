@@ -13,7 +13,8 @@ class C6CellAlignments(Enum):
 class C6Lattice(Lattice):
     def __init__(self, x_length, y_length, z_length):
         super().__init__(x_length, y_length, z_length)
-        self._alignments = [(0, 1), (0, 2), (1, 0), (1, 2), (2, 0), (2, 1)]
+        self._alignments = [C6CellAlignments.XY, C6CellAlignments.XZ, C6CellAlignments.YX,
+                            C6CellAlignments.YZ, C6CellAlignments.ZX, C6CellAlignments.ZY]
 
     def cell_alignments(self):
         return self._alignments
