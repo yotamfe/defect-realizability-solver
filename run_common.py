@@ -15,9 +15,10 @@ def run_realization(lattice, random_dislocation_probability):
 
 def verify_assignment(lattice, cell_assignment):
     for edge in lattice.iter_edges():
-        adjacent_alignments = lattice.edge_adjacent_alignments(edge)
-        edge_parity = len([(cell, alignment) for (cell, alignment) in adjacent_alignments
-                           if cell_assignment[cell] == alignment]) % 2
+        adjacent_alignment_blocks = lattice.edge_adjacent_alignment_blocks(edge)
+        blocks = [any(cell_assignment[cell] == alignment for (cell, alignment) in block)
+                    for block in adjacent_alignment_blocks]
+        edge_parity = len([b for b in blocks if b]) % 2
         if lattice.is_dislocation(edge):
             assert edge_parity != 0, "Expected dislocation in edge %s but found even number adjacent" % edge
         else:

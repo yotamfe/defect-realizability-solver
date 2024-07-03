@@ -8,29 +8,29 @@ class C2Lattice(Lattice):
     def cell_alignments(self):
         return self._alignments
 
-    def edge_adjacent_alignments(self, edge):
+    def edge_adjacent_alignment_blocks(self, edge):
         x, y, z, a = edge
         if a == 0:
             assert y < self._y_length - 1
             assert z < self._z_length - 1
-            return [((x, y, z), a),
-                    ((x, y + 1, z), a),
-                    ((x, y, z + 1), a),
-                    ((x, y + 1, z + 1), a)]
+            return [[((x, y, z), a)],
+                    [((x, y + 1, z), a)],
+                    [((x, y, z + 1), a)],
+                    [((x, y + 1, z + 1), a)]]
         if a == 1:
             assert x < self._x_length - 1
             assert z < self._z_length - 1
-            return [((x, y, z), a),
-                    ((x + 1, y, z), a),
-                    ((x, y, z + 1), a),
-                    ((x + 1, y, z + 1), a)]
+            return [[((x, y, z), a)],
+                    [((x + 1, y, z), a)],
+                    [((x, y, z + 1), a)],
+                    [((x + 1, y, z + 1), a)]]
         assert a == 2
         assert x < self._x_length - 1
         assert y < self._y_length - 1
-        return [((x, y, z), a),
-                ((x + 1, y, z), a),
-                ((x, y + 1, z), a),
-                ((x + 1, y + 1, z), a)]
+        return [[((x, y, z), a)],
+                [((x + 1, y, z), a)],
+                [((x, y + 1, z), a)],
+                [((x + 1, y + 1, z), a)]]
 
     def save_to_file(self, path):
         with open(path, "wt") as f:

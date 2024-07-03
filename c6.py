@@ -19,41 +19,65 @@ class C6Lattice(Lattice):
     def cell_alignments(self):
         return self._alignments
 
-    def edge_adjacent_alignments(self, edge):
+    def edge_adjacent_alignment_blocks(self, edge):
         x, y, z, a = edge
         if a == 0:
             assert y < self._y_length - 1
             assert z < self._z_length - 1
-            return [((x, y, z), C6CellAlignments.YX),
-                    ((x, y, z), C6CellAlignments.ZY),
-                    ((x, y + 1, z), C6CellAlignments.YZ),
-                    ((x, y + 1, z), C6CellAlignments.ZY),
-                    ((x, y, z + 1), C6CellAlignments.YX),
-                    ((x, y, z + 1), C6CellAlignments.ZX),
-                    ((x, y + 1, z + 1), C6CellAlignments.YZ),
-                    ((x, y + 1, z + 1), C6CellAlignments.ZX)]
+            return [[
+                        ((x, y, z), C6CellAlignments.YX),
+                        ((x, y, z), C6CellAlignments.ZY)
+                    ],
+                    [
+                        ((x, y + 1, z), C6CellAlignments.YZ),
+                        ((x, y + 1, z), C6CellAlignments.ZY)
+                    ],
+                    [
+                        ((x, y, z + 1), C6CellAlignments.YX),
+                        ((x, y, z + 1), C6CellAlignments.ZX)
+                    ],
+                    [
+                        ((x, y + 1, z + 1), C6CellAlignments.YZ),
+                        ((x, y + 1, z + 1), C6CellAlignments.ZX)
+                    ]]
         if a == 1:
             assert x < self._x_length - 1
             assert z < self._z_length - 1
-            return [((x, y, z), C6CellAlignments.ZY),
-                    ((x, y, z), C6CellAlignments.XZ),
-                    ((x + 1, y, z), C6CellAlignments.ZX),
-                    ((x + 1, y, z), C6CellAlignments.XZ),
-                    ((x, y, z + 1), C6CellAlignments.ZY),
-                    ((x, y, z + 1), C6CellAlignments.XY),
-                    ((x + 1, y, z + 1), C6CellAlignments.ZX),
-                    ((x + 1, y, z + 1), C6CellAlignments.XY)]
+            return [[
+                        ((x, y, z), C6CellAlignments.ZY),
+                        ((x, y, z), C6CellAlignments.XZ)
+                    ],
+                    [
+                        ((x + 1, y, z), C6CellAlignments.ZX),
+                        ((x + 1, y, z), C6CellAlignments.XZ)
+                    ],
+                    [
+                        ((x, y, z + 1), C6CellAlignments.ZY),
+                        ((x, y, z + 1), C6CellAlignments.XY)
+                    ],
+                    [
+                        ((x + 1, y, z + 1), C6CellAlignments.ZX),
+                        ((x + 1, y, z + 1), C6CellAlignments.XY)
+                    ]]
         assert a == 2
         assert x < self._x_length - 1
         assert y < self._y_length - 1
-        return [((x, y, z), C6CellAlignments.XZ),
-                ((x, y, z), C6CellAlignments.YX),
-                ((x + 1, y, z), C6CellAlignments.XY),
-                ((x + 1, y, z), C6CellAlignments.YX),
-                ((x, y + 1, z), C6CellAlignments.XZ),
-                ((x, y + 1, z), C6CellAlignments.YZ),
-                ((x + 1, y + 1, z), C6CellAlignments.XY),
-                ((x + 1, y + 1, z), C6CellAlignments.YZ)]
+        return [[
+                    ((x, y, z), C6CellAlignments.XZ),
+                    ((x, y, z), C6CellAlignments.YX)
+                ],
+                [
+                    ((x + 1, y, z), C6CellAlignments.XY),
+                    ((x + 1, y, z), C6CellAlignments.YX)
+                ],
+                [
+                    ((x, y + 1, z), C6CellAlignments.XZ),
+                    ((x, y + 1, z), C6CellAlignments.YZ)
+                ],
+                [
+                    ((x + 1, y + 1, z), C6CellAlignments.XY),
+                    ((x + 1, y + 1, z), C6CellAlignments.YZ)
+                ]]
 
     def save_to_file(self, path):
         with open(path, "wt") as f:

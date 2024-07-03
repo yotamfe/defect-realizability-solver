@@ -68,17 +68,19 @@ class LatticeDislocationLogic:
             else:
                 self._constrain_normal(edge)
 
-    def _constrain_normal(self, edge):
-        adjacent_alignments = self._lattice.edge_adjacent_alignments(edge)
+    def _block_formula(self, adjacency_block):
         adjacent_alignment_vars = [self._cell_alignment_var(cell, alignment)
-                                    for (cell, alignment) in adjacent_alignments]
+                                   for (cell, alignment) in adjacency_block]
+        return Or(*adjacent_alignment_vars)
+
+    def _constrain_normal(self, edge):
+        adjacent_alignments_blocks = self._lattice.edge_adjacent_alignment_blocks(edge)
+        adjacent_blocks_encoded = [self._block_formula(block) for block in adjacent_alignments_blocks]
         # TODO: try xor with true
-        # self._constraints_formulas.append(XOr(*adjacent_alignment_vars, PYSAT_TRUE))
-        self._constraints_formulas.append(Neg(XOr(*adjacent_alignment_vars)))
+        # self._constraints_formulas.append(XOr(*adjacent_blocks_encoded, PYSAT_TRUE))
+        self._constraints_formulas.append(Neg(XOr(*adjacent_blocks_encoded)))
 
     def _constrain_dislocation(self, edge):
-        adjacent_alignments = self._lattice.edge_adjacent_alignments(edge)
-        adjacent_alignment_vars = [self._cell_alignment_var(cell, alignment)
-                                   for (cell, alignment) in adjacent_alignments]
-        self._constraints_formulas.append(XOr(*adjacent_alignment_vars))
-
+        adjacent_alignments_blocks = self._lattice.edge_adjacent_alignment_blocks(edge)
+        adjacent_blocks_encoded = [self._block_formula(block) for block in adjacent_alignments_blocks]
+        self._constraints_formulas.append(XOr(*adjacent_blocks_encoded))
