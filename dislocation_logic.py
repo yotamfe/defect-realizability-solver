@@ -26,6 +26,27 @@ class LatticeDislocationLogic:
         v.clausify()
         return v
 
+    def _read_logical_assignment(self, model):
+        model_set = set(model)
+        res = dict()
+        for cell in self._lattice.iter_cells():
+            for alignment in self._lattice.cell_alignments():
+                val = self._cell_alignment_var(cell, alignment).name in model_set
+                res[(cell, alignment)] = val
+        return res
+
+    def read_cell_assignment(self, model):
+        potentially_conflicting_assingment = self._read_logical_assignment(model)
+        res = dict()
+        for cell in self._lattice.iter_cells():
+            chosen_alignments = set(alignment for alignment in self._lattice.cell_alignments()
+                                 if potentially_conflicting_assingment[(cell, alignment)])
+            if len(chosen_alignments) > 1:
+                raise ValueError("Conflicting assignment for orientation of cell %s" % str(cell))
+            alignment = list(chosen_alignments)[0]
+            res[cell] = alignment
+        return res
+
     def _add_cell_constraints(self):
         for cell in self._lattice.iter_cells():
             self._constrain_cell_single_assignment(cell)

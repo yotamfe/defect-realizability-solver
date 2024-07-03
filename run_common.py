@@ -13,6 +13,15 @@ def run_realization(lattice, random_dislocation_probability):
 
     lattice.save_to_file('latest_lattice.txt')
 
+def verify_assignment(lattice, cell_assignment):
+    for edge in lattice.iter_edges():
+        adjacent_alignments = lattice.edge_adjacent_alignments(edge)
+        edge_parity = len([(cell, alignment) for (cell, alignment) in adjacent_alignments
+                           if cell_assignment[cell] == alignment]) % 2
+        if lattice.is_dislocation(edge):
+            assert edge_parity == 0, "Expected dislocation in edge %s but found even number adjacent" % edge
+        else:
+            assert edge_parity != 0, "Expected normal in edge %s but found odd number adjacent" % edge
 
 def solve(lattice):
     sat_rep = LatticeDislocationLogic(lattice)
@@ -21,6 +30,10 @@ def solve(lattice):
     is_sat = s.solve()
     if is_sat:
         print("Solution found")
+        cell_assignment = sat_rep.read_cell_assignment(s.get_model())
+        for k, v in cell_assignment.items():
+            print(k, v)
+        verify_assignment(lattice, cell_assignment)
     else:
         print("No solution")
 
