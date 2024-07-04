@@ -51,15 +51,18 @@ def write_satisfying_assignment(cell_assignment, lattice):
             for block in adjacent_alignment_blocks:
                 truthifying_cells = [(cell, alignment) for (cell, alignment) in block
                                      if cell_assignment[cell] == alignment]
+                adjacent_alignments_in_block = [str(alignment) for (cell, alignment) in block]
                 if truthifying_cells == []:
                     cells_in_block = [cell for (cell, alignment) in block]
                     assert len(set(cells_in_block)) == 1 # (true for c6 becusae a block always involves just one cell)
                     falsifying_cell = cells_in_block[0]
                     falsifying_assignment = cell_assignment[falsifying_cell]
-                    f.write(f"\tFalse:\t{falsifying_cell}={falsifying_assignment}\n")
+                    f.write(f"\tFalse:\t{falsifying_cell}={falsifying_assignment}"
+                            f"\tnot in\t{adjacent_alignments_in_block}\n")
                 else:
                     truthifying_cell, truthifying_alignment = truthifying_cells[0]
-                    f.write(f"\tTrue:\t{truthifying_cell}={truthifying_alignment}\n")
+                    f.write(f"\tTrue:\t{truthifying_cell}={truthifying_alignment}"
+                            f"\tin\t\t{adjacent_alignments_in_block}\n")
 
 
 def go(lattice, probability, num_tries):
