@@ -1,10 +1,8 @@
 import numpy as np
 import itertools
 
-import pysat
-import pysat.solvers
-
 from dislocation_logic import LatticeDislocationLogic
+from pysat_logic_engine import PySATLogicEngine
 
 def run_realization(lattice, random_dislocation_probability):
     lattice.generate_dislocation_assignment(random_dislocation_probability)
@@ -25,19 +23,15 @@ def verify_assignment(lattice, cell_assignment):
             assert edge_parity == 0, "Expected normal in edge %s but found odd number adjacent" % edge
 
 def solve(lattice):
-    sat_rep = LatticeDislocationLogic(lattice)
-    s = pysat.solvers.Minisat22()
-    s.append_formula(sat_rep.constraints_cnf())
-    is_sat = s.solve()
+    logic_engine = PySATLogicEngine()
+    sat_rep = LatticeDislocationLogic(lattice, logic_engine)
+    is_sat, cell_assignment = sat_rep.check_realizability()
     if is_sat:
         print("Solution found")
-        cell_assignment = sat_rep.read_cell_assignment(s.get_model())
         write_satisfying_assignment(cell_assignment, lattice)
-
         verify_assignment(lattice, cell_assignment)
     else:
         print("No solution")
-
 
 def write_satisfying_assignment(cell_assignment, lattice):
     with open("latest_model.txt", "wt") as f:

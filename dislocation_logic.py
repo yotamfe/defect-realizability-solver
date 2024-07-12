@@ -1,32 +1,23 @@
 import numpy as np
 import itertools
 
-from pysat.formula import CNF, And, Or, XOr, Neg, Atom, PYSAT_TRUE
-import pysat.card
-
-def exactly_one(*formulas):
-    at_least_one = Or(*formulas)
-    at_most_one = And(*[Neg(And(f1, f2))
-                        for f1, f2 in itertools.combinations(formulas, 2)])
-    return And(at_least_one, at_most_one)
-
 class LatticeDislocationLogic:
-    def __init__(self, lattice):
+    def __init__(self, lattice, logic_engine):
         self._lattice = lattice
+        self._logic_engine = logic_engine
         self._constraints_formulas = []
 
         self._add_cell_constraints()
         self._add_edge_constraints()
 
     def constraints_cnf(self):
-        return And(*self._constraints_formulas)
+        return self._logic_engine.And(*self._constraints_formulas)
 
     def _cell_alignment_var(self, cell, alignment):
-        v = Atom((cell, alignment))
-        v.clausify()
-        return v
+        return self._logic_engine.var((cell, alignment))
 
     def _read_logical_assignment(self, model):
+        # TODO: adapt to z3?
         model_set = set(model)
         res = dict()
         for cell in self._lattice.iter_cells():
@@ -34,6 +25,12 @@ class LatticeDislocationLogic:
                 val = self._cell_alignment_var(cell, alignment).name in model_set
                 res[(cell, alignment)] = val
         return res
+
+    def check_realizability(self):
+        is_sat, model = self._logic_engine.check_sat(self.constraints_cnf())
+        if not is_sat:
+            return False, None
+        return True, self.read_cell_assignment(model)
 
     def read_cell_assignment(self, model):
         potentially_conflicting_assingment = self._read_logical_assignment(model)
@@ -54,11 +51,7 @@ class LatticeDislocationLogic:
     def _constrain_cell_single_assignment(self, cell):
         cell_alignments_vars = [self._cell_alignment_var(cell, alignment)
                                     for alignment in self._lattice.cell_alignments()]
-        # TODO: try pysat's cardinality encoding
-        # cell_assignment_vars_ids = [a.name for a in cell_alignments_vars]
-        # exactly_one = pysat.card.CardEnc.equals(cell_assignment_vars_ids, bound=1, encoding=pysat.card.EncType.pairwise)
-        # exactly_one_cnf = CNF(from_clauses=exactly_one.clauses)
-        exactly_one_cnf = exactly_one(*cell_alignments_vars)
+        exactly_one_cnf = self._logic_engine.exactly_one(*cell_alignments_vars)
         self._constraints_formulas.append(exactly_one_cnf)
 
     def _add_edge_constraints(self):
@@ -71,16 +64,14 @@ class LatticeDislocationLogic:
     def _block_formula(self, adjacency_block):
         adjacent_alignment_vars = [self._cell_alignment_var(cell, alignment)
                                    for (cell, alignment) in adjacency_block]
-        return Or(*adjacent_alignment_vars)
+        return self._logic_engine.Or(*adjacent_alignment_vars)
 
     def _constrain_normal(self, edge):
         adjacent_alignments_blocks = self._lattice.edge_adjacent_alignment_blocks(edge)
         adjacent_blocks_encoded = [self._block_formula(block) for block in adjacent_alignments_blocks]
-        # TODO: try xor with true
-        # self._constraints_formulas.append(XOr(*adjacent_blocks_encoded, PYSAT_TRUE))
-        self._constraints_formulas.append(Neg(XOr(*adjacent_blocks_encoded)))
+        self._constraints_formulas.append(self._logic_engine.XNOr(*adjacent_blocks_encoded))
 
     def _constrain_dislocation(self, edge):
         adjacent_alignments_blocks = self._lattice.edge_adjacent_alignment_blocks(edge)
         adjacent_blocks_encoded = [self._block_formula(block) for block in adjacent_alignments_blocks]
-        self._constraints_formulas.append(XOr(*adjacent_blocks_encoded))
+        self._constraints_formulas.append(self._logic_engine.XOr(*adjacent_blocks_encoded))
