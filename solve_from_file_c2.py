@@ -8,11 +8,15 @@ def main():
                                      description='Try to find cell alignments that satisfy '
                                                  'a given dislocation pattern on a lattice')
     parser.add_argument('-i', '--input_file')
+    parser.add_argument('-s', '--solver',
+                        choices=['minisat', 'z3'],
+                        default='minisat')
+
 
     args = parser.parse_args()
     lattice = C2Lattice.load_from_file(args.input_file)
 
-    run_common.run_from_file(lattice)
+    run_common.run_from_file(lattice, args.solver)
 
 if __name__ == "__main__":
     main()

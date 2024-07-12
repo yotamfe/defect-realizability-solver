@@ -1,13 +1,11 @@
+import itertools
+
 import pysat
 from pysat.formula import CNF, And, Or, XOr, Neg, Atom, PYSAT_TRUE
 import pysat.card
 import pysat.solvers
 
-import itertools
-
-class LogicEngine:
-    pass
-
+from logic_engine import LogicEngine
 class PySATLogicEngine(LogicEngine):
     def var(self, obj):
         v = Atom(obj)
@@ -43,3 +41,7 @@ class PySATLogicEngine(LogicEngine):
         if not is_sat:
             return False, None
         return True, s.get_model()
+
+    def var_true_in_model(self, var, model):
+        model_set = set(model)
+        return var.name in model_set

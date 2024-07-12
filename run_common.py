@@ -2,12 +2,15 @@ import numpy as np
 import itertools
 
 from dislocation_logic import LatticeDislocationLogic
-from pysat_logic_engine import PySATLogicEngine
 
-def run_realization(lattice, random_dislocation_probability):
+# TODO: select engine
+from pysat_logic_engine import PySATLogicEngine
+from z3_logic_engine import Z3LogicEngine
+
+def run_realization(lattice, random_dislocation_probability, logic_engine):
     lattice.generate_dislocation_assignment(random_dislocation_probability)
 
-    solve(lattice)
+    solve(lattice, logic_engine)
 
     lattice.save_to_file('latest_lattice.txt')
 
@@ -22,8 +25,7 @@ def verify_assignment(lattice, cell_assignment):
         else:
             assert edge_parity == 0, "Expected normal in edge %s but found odd number adjacent" % edge
 
-def solve(lattice):
-    logic_engine = PySATLogicEngine()
+def solve(lattice, logic_engine):
     sat_rep = LatticeDislocationLogic(lattice, logic_engine)
     is_sat, cell_assignment = sat_rep.check_realizability()
     if is_sat:
@@ -58,11 +60,21 @@ def write_satisfying_assignment(cell_assignment, lattice):
                     f.write(f"\tTrue:\t{truthifying_cell}={truthifying_alignment}"
                             f"\tin\t\t{adjacent_alignments_in_block}\n")
 
+def logic_engine_from_user_choice(solver_str):
+    if solver_str == 'minisat':
+        from pysat_logic_engine import PySATLogicEngine
+        return PySATLogicEngine()
+    elif solver_str == 'z3':
+        from z3_logic_engine import Z3LogicEngine
+        return Z3LogicEngine()
+    assert False, "Unsupported solver choice"
 
-def go(lattice, probability, num_tries):
+def go(lattice, probability, num_tries, solver_str):
+    logic_engine = logic_engine_from_user_choice(solver_str)
     for i in range(num_tries):
         print("Running realization", i)
-        run_realization(lattice, probability)
+        run_realization(lattice, probability, logic_engine)
 
-def run_from_file(lattice):
-    solve(lattice)
+def run_from_file(lattice, solver_str):
+    logic_engine = logic_engine_from_user_choice(solver_str)
+    solve(lattice, logic_engine)

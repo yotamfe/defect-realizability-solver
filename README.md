@@ -64,4 +64,15 @@ And similarly for C6,
 python solve_from_file_c6.py -i <input_file>
 ```
 
+### Choosing solver
+All run configurations above support the choice of a solver to use for generating and solving the constraints, by specifying e.g.
+```
+python solve_from_file_c6.py -i <input_file> -s <solver>
+```
+where `<solver>` is either `minisat` or `z3`.
+The use of Z3 requires an [installation of Z3](https://github.com/Z3Prover/z3) including the python bindings (`--python` flag for `mk_make.py`).
+
+
+
+
 

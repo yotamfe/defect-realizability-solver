@@ -17,12 +17,10 @@ class LatticeDislocationLogic:
         return self._logic_engine.var((cell, alignment))
 
     def _read_logical_assignment(self, model):
-        # TODO: adapt to z3?
-        model_set = set(model)
         res = dict()
         for cell in self._lattice.iter_cells():
             for alignment in self._lattice.cell_alignments():
-                val = self._cell_alignment_var(cell, alignment).name in model_set
+                val = self._logic_engine.var_true_in_model(self._cell_alignment_var(cell, alignment), model)
                 res[(cell, alignment)] = val
         return res
 
