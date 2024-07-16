@@ -16,7 +16,7 @@ class LatticeDislocationLogic:
     def _cell_alignment_var(self, cell, alignment):
         return self._logic_engine.var((cell, alignment))
 
-    def _read_logical_assignment(self, model):
+    def _read_cell_alignment_logical_assignment(self, model):
         res = dict()
         for cell in self._lattice.iter_cells():
             for alignment in self._lattice.cell_alignments():
@@ -31,7 +31,7 @@ class LatticeDislocationLogic:
         return True, self.read_cell_assignment(model)
 
     def read_cell_assignment(self, model):
-        potentially_conflicting_assingment = self._read_logical_assignment(model)
+        potentially_conflicting_assingment = self._read_cell_alignment_logical_assignment(model)
         res = dict()
         for cell in self._lattice.iter_cells():
             chosen_alignments = set(alignment for alignment in self._lattice.cell_alignments()

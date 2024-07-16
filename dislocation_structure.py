@@ -44,6 +44,9 @@ class Lattice(ABC):
 
         self._make_even_num_dislocations_per_cell()
 
+    def set_defect_set(self, defect_set):
+        self._dislocations_edgeset = defect_set
+
     def _iter_internal_cells(self):
         return itertools.product(range(self._x_length - 1), range(self._y_length - 1), range(self._z_length - 1))
 
@@ -64,12 +67,20 @@ class Lattice(ABC):
         else:
             self._dislocations_edgeset.add(edge)
 
-    def _make_even_num_dislocations_per_cell(self):
-        for cell in self._iter_internal_cells():
-            if self._has_even_num_of_dislocations(cell):
-                continue
-            x, y, z = cell
-            self._toggle_dislocation((x + 1, y, z, 0))
+    def _has_even_num_of_dislocations(self, cell):
+        cell_edges = self._cell_edges(cell)
+        cell_dislocations = cell_edges & self._dislocations_edgeset
+        return len(cell_dislocations) % 2 == 0
+
+    def _cell_edges(self, cell):
+        x, y, z = cell
+        assert x < self._x_length
+        assert y < self._y_length
+        assert z < self._z_length
+        cell_edges = set([(x, y, z, 0), (x + 1, y, z, 0),
+                          (x, y, z, 1), (x, y + 1, z, 1),
+                          (x, y, z, 2), (x, y, z + 1, 2)])
+        return cell_edges
 
     @abstractmethod
     def save_to_file(self, path):
