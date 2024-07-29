@@ -34,6 +34,28 @@ class SymbolicLatticeDislocationLogic(LatticeDislocationLogic):
         return self._logic_engine.ForAll(cell_vars,
                                          formula)
 
+    def exists_defect_set(self, formula):
+        is_defect_vars = [self._is_defect_symbolic_var(edge)
+                            for edge in self._lattice.iter_edges()]
+        return self._logic_engine.Exists(is_defect_vars,
+                                         formula)
+
+    def forall_defect_set(self, formula):
+        is_defect_vars = [self._is_defect_symbolic_var(edge)
+                            for edge in self._lattice.iter_edges()]
+        return self._logic_engine.ForAll(is_defect_vars,
+                                         formula)
+
+    def forall_non_edge_defect_vars(self, formula):
+        is_defect_vars = set(self._is_defect_symbolic_var(edge)
+                          for edge in self._lattice.iter_edges())
+        return self._logic_engine.ForAllVarsExcept(is_defect_vars, formula)
+
+    def exists_non_edge_defect_vars(self, formula):
+        is_defect_vars = set(self._is_defect_symbolic_var(edge)
+                          for edge in self._lattice.iter_edges())
+        return self._logic_engine.ExistAllVarsExcept(is_defect_vars, formula)
+
     def _read_edge_defect_logical_assignment(self, model):
         res = dict()
         for edge in self._lattice.iter_edges():
@@ -53,10 +75,21 @@ class SymbolicLatticeDislocationLogic(LatticeDislocationLogic):
         return res
 
     def check_unrealizable_defect_set_existence(self):
-        formula = self.forall_cell_alignments(self._logic_engine.And(self.constrain_even_num_dislocations_per_cell(),
-                                                                    self._logic_engine.Neg(self.constraints_cnf())))
+        # TODO: careful about auxiliary variables from Tsietin encoding!
+        # formula = self.forall_cell_alignments(self._logic_engine.And(self.constrain_even_num_dislocations_per_cell(),
+        #                                                             self._logic_engine.Neg(self.constraints_cnf())))
+        # formula = self.exists_defect_set(self.forall_cell_alignments(self._logic_engine.Neg(self.constraints_cnf())))
+        # formula = self.forall_cell_alignments(self._logic_engine.Neg(self.constraints_cnf()))
+        # formula = self.forall_non_edge_defect_vars(self._logic_engine.Neg(self.constraints_cnf()))
+        # formula = self.exists_defect_set(self.forall_non_edge_defect_vars(self._logic_engine.Neg(self.constraints_cnf())))
+        # is_sat, model = self._logic_engine.check_sat(formula)
+        # if not is_sat:
+        #     return False, None
+        # return True, self.read_defect_set(model)
+        formula = self.forall_defect_set(self.exists_non_edge_defect_vars(self._logic_engine.Or(self.constraints_cnf(),
+                                                                                                self._logic_engine.Neg(self.constrain_even_num_dislocations_per_cell()))))
         is_sat, model = self._logic_engine.check_sat(formula)
-        if not is_sat:
+        if is_sat:
             return False, None
         return True, self.read_defect_set(model)
 

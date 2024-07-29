@@ -2,6 +2,7 @@ import argparse
 
 from c2 import C2Lattice
 from z3_logic_engine import Z3LogicEngine
+from depqbf_logic_engine import DepQBFLogicEngine
 from symbolic_dislocation_logic import SymbolicLatticeDislocationLogic
 
 def main():
@@ -13,7 +14,8 @@ def main():
     lattice_length = int(args.length)
 
     lattice = C2Lattice(lattice_length, lattice_length, lattice_length)
-    logic_engine = Z3LogicEngine()
+    # logic_engine = Z3LogicEngine()
+    logic_engine = DepQBFLogicEngine()
     sat_rep = SymbolicLatticeDislocationLogic(lattice, logic_engine)
     is_sat, defect_set = sat_rep.check_unrealizable_defect_set_existence()
     print(is_sat)
