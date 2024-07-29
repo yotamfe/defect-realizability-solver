@@ -1,7 +1,7 @@
 import itertools
 
 import pysat
-from pysat.formula import CNF, And, Or, XOr, Neg, Atom, PYSAT_TRUE
+from pysat.formula import CNF, And, Or, XOr, Neg, Equals, Atom, PYSAT_TRUE
 import pysat.card
 import pysat.solvers
 
@@ -33,6 +33,37 @@ class PySATLogicEngine(LogicEngine):
         at_most_one = And(*[Neg(And(f1, f2))
                             for f1, f2 in itertools.combinations(formulas, 2)])
         return And(at_least_one, at_most_one)
+
+    def Neg(self, arg):
+        return Neg(arg)
+
+    def Eq(self, f1, f2):
+        return Equals(f1, f2)
+
+    def to_dimacs_repr(self, formula):
+        # from pysat.formula import Formula
+        #
+        # print(list(Formula._vpool[Formula._context].id2obj.items()))
+        # assert False
+        # formula.clausify()
+        # clauses = formula.clauses
+        # for clause in formula.clauses:
+        #     for lit in clause:
+        #         if clauses == [[lit]]:
+        #             # atom - otherwise atom considered a subformula of itself
+        #             return clauses
+        #         if lit < 0:
+        #             # negation proceeds with the positive occurrence of the literal - otherwise infinite loop
+        #             lit = -lit
+        #         subformulas = formula.formulas([lit], atoms_only=False)
+        #         assert len(subformulas) == 1
+        #         subformula = subformulas[0]
+        #         clauses += self.to_dimacs_repr(subformula)
+        # return clauses
+        clauses = []
+        for clause in formula:
+            clauses.append(clause)
+        return clauses
 
     def check_sat(self, formula):
         s = pysat.solvers.Minisat22()
