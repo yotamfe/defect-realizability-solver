@@ -45,7 +45,7 @@ class C6Lattice(Lattice):
             assert z < self._z_length - 1
             return [[
                         ((x, y, z), C6CellAlignments.ZY),
-                        ((x, y, z), C6CellAlignments.XZ)
+                        ((x, y, z), C6CellAlignments.XY)
                     ],
                     [
                         ((x + 1, y, z), C6CellAlignments.ZX),
@@ -57,7 +57,7 @@ class C6Lattice(Lattice):
                     ],
                     [
                         ((x + 1, y, z + 1), C6CellAlignments.ZX),
-                        ((x + 1, y, z + 1), C6CellAlignments.XY)
+                        ((x + 1, y, z + 1), C6CellAlignments.XZ)
                     ]]
         assert a == 2
         assert x < self._x_length - 1
