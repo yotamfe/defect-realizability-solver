@@ -25,26 +25,26 @@ class C6Lattice(Lattice):
             assert y < self._y_length - 1
             assert z < self._z_length - 1
             return [[
-                        ((x, y, z), C6CellAlignments.YX),
+                        ((x, y, z), C6CellAlignments.YZ),
                         ((x, y, z), C6CellAlignments.ZY)
                     ],
                     [
-                        ((x, y + 1, z), C6CellAlignments.YZ),
+                        ((x, y + 1, z), C6CellAlignments.YX),
                         ((x, y + 1, z), C6CellAlignments.ZY)
                     ],
                     [
-                        ((x, y, z + 1), C6CellAlignments.YX),
+                        ((x, y, z + 1), C6CellAlignments.YZ),
                         ((x, y, z + 1), C6CellAlignments.ZX)
                     ],
                     [
-                        ((x, y + 1, z + 1), C6CellAlignments.YZ),
+                        ((x, y + 1, z + 1), C6CellAlignments.YX),
                         ((x, y + 1, z + 1), C6CellAlignments.ZX)
                     ]]
         if a == 1:
             assert x < self._x_length - 1
             assert z < self._z_length - 1
             return [[
-                        ((x, y, z), C6CellAlignments.ZY),
+                        ((x, y, z), C6CellAlignments.ZX),
                         ((x, y, z), C6CellAlignments.XY)
                     ],
                     [
@@ -56,7 +56,7 @@ class C6Lattice(Lattice):
                         ((x, y, z + 1), C6CellAlignments.XY)
                     ],
                     [
-                        ((x + 1, y, z + 1), C6CellAlignments.ZX),
+                        ((x + 1, y, z + 1), C6CellAlignments.ZY),
                         ((x + 1, y, z + 1), C6CellAlignments.XZ)
                     ]]
         assert a == 2
