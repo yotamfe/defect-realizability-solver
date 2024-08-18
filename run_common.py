@@ -3,10 +3,6 @@ import itertools
 
 from dislocation_logic import LatticeDislocationLogic
 
-# TODO: select engine
-from pysat_logic_engine import PySATLogicEngine
-from z3_logic_engine import Z3LogicEngine
-
 def run_realization(lattice, random_dislocation_probability, logic_engine):
     lattice.generate_dislocation_assignment(random_dislocation_probability)
 
