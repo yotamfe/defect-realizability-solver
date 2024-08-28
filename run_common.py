@@ -1,10 +1,10 @@
 import numpy as np
 import itertools
 
-from dislocation_logic import LatticeDislocationLogic
+from defect_logic import LatticeDefectLogic
 
-def run_realization(lattice, random_dislocation_probability, logic_engine):
-    lattice.generate_dislocation_assignment(random_dislocation_probability)
+def run_realization(lattice, random_defect_probability, logic_engine):
+    lattice.generate_defect_assignment(random_defect_probability)
 
     solve(lattice, logic_engine)
 
@@ -16,13 +16,13 @@ def verify_assignment(lattice, cell_assignment):
         blocks = [any(cell_assignment[cell] == orientation for (cell, orientation) in block)
                     for block in adjacent_orientation_blocks]
         edge_parity = len([b for b in blocks if b]) % 2
-        if lattice.is_dislocation(edge):
-            assert edge_parity != 0, "Expected dislocation in edge %s but found even number adjacent" % edge
+        if lattice.is_defect(edge):
+            assert edge_parity != 0, "Expected defect in edge %s but found even number adjacent" % edge
         else:
-            assert edge_parity == 0, "Expected normal in edge %s but found odd number adjacent" % edge
+            assert edge_parity == 0, "Expected compatible in edge %s but found odd number adjacent" % edge
 
 def solve(lattice, logic_engine):
-    sat_rep = LatticeDislocationLogic(lattice, logic_engine)
+    sat_rep = LatticeDefectLogic(lattice, logic_engine)
     is_sat, cell_assignment = sat_rep.check_realizability()
     if is_sat:
         print("Solution found")
@@ -37,8 +37,8 @@ def write_satisfying_assignment(cell_orientations, lattice):
             f.write(f"{k} {v}\n")
         f.write("\n")
         for edge in lattice.iter_edges():
-            dislocation_expected = "Dislocation" if lattice.is_dislocation(edge) else "Normal"
-            f.write(f"{edge}: {dislocation_expected}\n")
+            defect_expected = "Dislocation" if lattice.is_defect(edge) else "Normal"
+            f.write(f"{edge}: {defect_expected}\n")
             adjacent_orientation_blocks = lattice.edge_adjacent_orientation_blocks(edge)
             for block in adjacent_orientation_blocks:
                 truthifying_cells = [(cell, orientation) for (cell, orientation) in block

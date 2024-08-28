@@ -1,7 +1,7 @@
 import numpy as np
 import itertools
 
-class LatticeDislocationLogic:
+class LatticeDefectLogic:
     def __init__(self, lattice, logic_engine):
         self._lattice = lattice
         self._logic_engine = logic_engine
@@ -54,22 +54,22 @@ class LatticeDislocationLogic:
 
     def _add_edge_constraints(self):
         for edge in self._lattice.iter_edges():
-            if self._lattice.is_dislocation(edge):
-                self._constrain_dislocation(edge)
+            if self._lattice.is_defect(edge):
+                self._constrain_defect(edge)
             else:
-                self._constrain_normal(edge)
+                self._constrain_compatible(edge)
 
     def _block_formula(self, adjacency_block):
         adjacent_orientation_vars = [self._cell_orientation_var(cell, orientation)
                                    for (cell, orientation) in adjacency_block]
         return self._logic_engine.Or(*adjacent_orientation_vars)
 
-    def _constrain_normal(self, edge):
+    def _constrain_compatible(self, edge):
         adjacent_orientations_blocks = self._lattice.edge_adjacent_orientation_blocks(edge)
         adjacent_blocks_encoded = [self._block_formula(block) for block in adjacent_orientations_blocks]
         self._constraints_formulas.append(self._logic_engine.XNOr(*adjacent_blocks_encoded))
 
-    def _constrain_dislocation(self, edge):
+    def _constrain_defect(self, edge):
         adjacent_orientations_blocks = self._lattice.edge_adjacent_orientation_blocks(edge)
         adjacent_blocks_encoded = [self._block_formula(block) for block in adjacent_orientations_blocks]
         self._constraints_formulas.append(self._logic_engine.XOr(*adjacent_blocks_encoded))

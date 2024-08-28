@@ -1,6 +1,6 @@
 from enum import Enum
 
-from dislocation_structure import Lattice
+from defect_structure import Lattice
 
 class C6CellOrientations(Enum):
     XY = 0
@@ -83,7 +83,7 @@ class C6Lattice(Lattice):
         with open(path, "wt") as f:
             f.write(f"{self._x_length} {self._y_length} {self._z_length}\n")
             for edge in self.iter_edges():
-                constraint = "Dislocation" if self.is_dislocation(edge) else "Normal"
+                constraint = "Dislocation" if self.is_defect(edge) else "Normal"
                 x, y, z, a = edge
                 f.write(f"{x} {y} {z} {constraint}\n")
 
@@ -111,9 +111,9 @@ class C6Lattice(Lattice):
                     raise ValueError(f"Malformed file: expecting edge {expect_x} {expect_y} {expect_z} {expect_a}"
                                      f"got {x_str} {y_str} {z_str}")
                 if disloc_str == "Dislocation":
-                    lattice._dislocations_edgeset.add(edge)
+                    lattice._defects_edgeset.add(edge)
                 elif disloc_str != "Normal":
                     raise ValueError(
-                        f"Malformed file: unknown dislocation status for line {x_str} {y_str} {z_str} {disloc_str}")
+                        f"Malformed file: unknown defect status for line {x_str} {y_str} {z_str} {disloc_str}")
 
             return lattice

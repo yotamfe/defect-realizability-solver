@@ -6,7 +6,7 @@ import run_common
 def main():
     parser = argparse.ArgumentParser(prog='solve_from_file_c2',
                                      description='Try to find cell orientations that satisfy '
-                                                 'a given dislocation pattern on a lattice')
+                                                 'a given defect set on a lattice')
     parser.add_argument('-i', '--input_file')
     parser.add_argument('-s', '--solver',
                         choices=['minisat', 'z3'],

@@ -1,4 +1,4 @@
-from dislocation_structure import Lattice
+from defect_structure import Lattice
 
 class C2Lattice(Lattice):
     def __init__(self, x_length, y_length, z_length):
@@ -36,7 +36,7 @@ class C2Lattice(Lattice):
         with open(path, "wt") as f:
             f.write(f"{self._x_length} {self._y_length} {self._z_length}\n")
             for edge in self.iter_edges():
-                constraint = "Odd" if self.is_dislocation(edge) else "Even"
+                constraint = "Odd" if self.is_defect(edge) else "Even"
                 x, y, z, a = edge
                 f.write(f"{x} {y} {z} {constraint}\n")
 
@@ -59,14 +59,14 @@ class C2Lattice(Lattice):
                 line = f.readline()
                 if len(line.split()) != 4:
                     raise ValueError("Malformed file: expecting {x} {y} {z} {Odd/Even}")
-                x_str, y_str, z_str, disloc_str = line.split()
+                x_str, y_str, z_str, defect_str = line.split()
                 if int(x_str) != expect_x or int(y_str) != expect_y or int(z_str) != expect_z:
                     raise ValueError(f"Malformed file: expecting edge {expect_x} {expect_y} {expect_z} {expect_a}"
                                          f"got {x_str} {y_str} {z_str}")
-                if disloc_str == "Odd":
-                    lattice._dislocations_edgeset.add(edge)
-                elif disloc_str != "Even":
-                    raise ValueError(f"Malformed file: unknown dislocation status for line {x_str} {y_str} {z_str} {disloc_str}")
+                if defect_str == "Odd":
+                    lattice._defects_edgeset.add(edge)
+                elif defect_str != "Even":
+                    raise ValueError(f"Malformed file: unknown defect status for line {x_str} {y_str} {z_str} {defect_str}")
 
             return lattice
 

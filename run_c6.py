@@ -23,7 +23,7 @@ def main():
 
     probability_percent = str(probability * 100.0)
     print(f"Running {num_tries} realizations of size {lattice_length}x{lattice_length}x{lattice_length} "
-          f"with {probability_percent}% random dislocations")
+          f"with {probability_percent}% random defects")
 
     run_common.go(C6Lattice(lattice_length, lattice_length, lattice_length),
                   probability, num_tries, solver_str)

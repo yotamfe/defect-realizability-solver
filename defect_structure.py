@@ -14,7 +14,7 @@ class Lattice(ABC):
         # (with the convention that the lattice is directed away from the origin),
         # and the direction in the lattice it goes to.
 
-        self._dislocations_edgeset = set()
+        self._defects_edgeset = set()
 
     @abstractmethod
     def cell_orientations(self):
@@ -30,24 +30,24 @@ class Lattice(ABC):
             itertools.product(range(self._x_length - 1), range(self._y_length - 1), range(self._z_length), [2]),
         )
 
-    def is_dislocation(self, edge):
-        return edge in self._dislocations_edgeset
+    def is_defect(self, edge):
+        return edge in self._defects_edgeset
 
     @abstractmethod
     def edge_adjacent_orientation_blocks(self, edge):
         pass
 
-    def generate_dislocation_assignment(self, random_dislocation_probability):
+    def generate_defect_assignment(self, random_defect_probability):
         for edge in self.iter_edges():
-            if random.random() < random_dislocation_probability:
-                self._dislocations_edgeset.add(edge)
+            if random.random() < random_defect_probability:
+                self._defects_edgeset.add(edge)
 
-        self._make_even_num_dislocations_per_cell()
+        self._make_even_num_defects_per_cell()
 
     def _iter_internal_cells(self):
         return itertools.product(range(self._x_length - 1), range(self._y_length - 1), range(self._z_length - 1))
 
-    def _has_even_num_of_dislocations(self, cell):
+    def _has_even_num_of_defects(self, cell):
         x, y, z = cell
         assert x < self._x_length
         assert y < self._y_length
@@ -55,21 +55,21 @@ class Lattice(ABC):
         cell_edges = set([(x, y, z, 0), (x + 1, y, z, 0),
                           (x, y, z, 1), (x, y + 1, z, 1),
                           (x, y, z, 2), (x, y, z + 1, 2)])
-        cell_dislocations = cell_edges & self._dislocations_edgeset
-        return len(cell_dislocations) % 2 == 0
+        cell_defects = cell_edges & self._defects_edgeset
+        return len(cell_defects) % 2 == 0
 
-    def _toggle_dislocation(self, edge):
-        if edge in self._dislocations_edgeset:
-            self._dislocations_edgeset.remove(edge)
+    def _toggle_defect(self, edge):
+        if edge in self._defects_edgeset:
+            self._defects_edgeset.remove(edge)
         else:
-            self._dislocations_edgeset.add(edge)
+            self._defects_edgeset.add(edge)
 
-    def _make_even_num_dislocations_per_cell(self):
+    def _make_even_num_defects_per_cell(self):
         for cell in self._iter_internal_cells():
-            if self._has_even_num_of_dislocations(cell):
+            if self._has_even_num_of_defects(cell):
                 continue
             x, y, z = cell
-            self._toggle_dislocation((x + 1, y, z, 0))
+            self._toggle_defect((x + 1, y, z, 0))
 
     @abstractmethod
     def save_to_file(self, path):
