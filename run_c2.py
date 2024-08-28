@@ -5,7 +5,7 @@ import run_common
 
 def main():
     parser = argparse.ArgumentParser(prog='run_c2',
-                                     description='Try to find cell alignments that satisfy '
+                                     description='Try to find cell orientations that satisfy '
                                                  'a random dislocation pattern on a lattice')
     parser.add_argument('-l', '--length')
     parser.add_argument('-n', '--num_tries')

@@ -17,7 +17,7 @@ class Lattice(ABC):
         self._dislocations_edgeset = set()
 
     @abstractmethod
-    def cell_alignments(self):
+    def cell_orientations(self):
         pass
 
     def iter_cells(self):
@@ -34,7 +34,7 @@ class Lattice(ABC):
         return edge in self._dislocations_edgeset
 
     @abstractmethod
-    def edge_adjacent_alignment_blocks(self, edge):
+    def edge_adjacent_orientation_blocks(self, edge):
         pass
 
     def generate_dislocation_assignment(self, random_dislocation_probability):

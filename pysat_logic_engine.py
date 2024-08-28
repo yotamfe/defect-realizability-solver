@@ -26,9 +26,6 @@ class PySATLogicEngine(LogicEngine):
 
     def exactly_one(self, *formulas):
         # TODO: try pysat's cardinality encoding
-        # cell_assignment_vars_ids = [a.name for a in cell_alignments_vars]
-        # exactly_one = pysat.card.CardEnc.equals(cell_assignment_vars_ids, bound=1, encoding=pysat.card.EncType.pairwise)
-        # exactly_one_cnf = CNF(from_clauses=exactly_one.clauses)
         at_least_one = Or(*formulas)
         at_most_one = And(*[Neg(And(f1, f2))
                             for f1, f2 in itertools.combinations(formulas, 2)])

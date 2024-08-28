@@ -5,7 +5,7 @@ import run_common
 
 def main():
     parser = argparse.ArgumentParser(prog='solve_from_file_c6',
-                                     description='Try to find cell alignments that satisfy '
+                                     description='Try to find cell orientations that satisfy '
                                                  'a given dislocation pattern on a lattice')
     parser.add_argument('-i', '--input_file')
     parser.add_argument('-s', '--solver',

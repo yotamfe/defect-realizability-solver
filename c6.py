@@ -2,7 +2,7 @@ from enum import Enum
 
 from dislocation_structure import Lattice
 
-class C6CellAlignments(Enum):
+class C6CellOrientations(Enum):
     XY = 0
     XZ = 1
     YX = 2
@@ -13,70 +13,70 @@ class C6CellAlignments(Enum):
 class C6Lattice(Lattice):
     def __init__(self, x_length, y_length, z_length):
         super().__init__(x_length, y_length, z_length)
-        self._alignments = [C6CellAlignments.XY, C6CellAlignments.XZ, C6CellAlignments.YX,
-                            C6CellAlignments.YZ, C6CellAlignments.ZX, C6CellAlignments.ZY]
+        self._orientations = [C6CellOrientations.XY, C6CellOrientations.XZ, C6CellOrientations.YX,
+                              C6CellOrientations.YZ, C6CellOrientations.ZX, C6CellOrientations.ZY]
 
-    def cell_alignments(self):
-        return self._alignments
+    def cell_orientations(self):
+        return self._orientations
 
-    def edge_adjacent_alignment_blocks(self, edge):
+    def edge_adjacent_orientation_blocks(self, edge):
         x, y, z, a = edge
         if a == 0:
             assert y < self._y_length - 1
             assert z < self._z_length - 1
             return [[
-                        ((x, y + 1, z), C6CellAlignments.ZX),
-                        ((x, y + 1, z), C6CellAlignments.YZ)
+                        ((x, y + 1, z), C6CellOrientations.ZX),
+                        ((x, y + 1, z), C6CellOrientations.YZ)
                     ],
                     [
-                        ((x, y, z), C6CellAlignments.ZX),
-                        ((x, y, z), C6CellAlignments.YX)
+                        ((x, y, z), C6CellOrientations.ZX),
+                        ((x, y, z), C6CellOrientations.YX)
                     ],
                     [
-                        ((x, y + 1, z + 1), C6CellAlignments.ZY),
-                        ((x, y + 1, z + 1), C6CellAlignments.YZ)
+                        ((x, y + 1, z + 1), C6CellOrientations.ZY),
+                        ((x, y + 1, z + 1), C6CellOrientations.YZ)
                     ],
                     [
-                        ((x, y, z + 1), C6CellAlignments.ZY),
-                        ((x, y, z + 1), C6CellAlignments.YX)
+                        ((x, y, z + 1), C6CellOrientations.ZY),
+                        ((x, y, z + 1), C6CellOrientations.YX)
                     ]]
         if a == 1:
             assert x < self._x_length - 1
             assert z < self._z_length - 1
             return [[
-                        ((x, y, z), C6CellAlignments.ZY),
-                        ((x, y, z), C6CellAlignments.XY)
+                        ((x, y, z), C6CellOrientations.ZY),
+                        ((x, y, z), C6CellOrientations.XY)
                     ],
                     [
-                        ((x + 1, y, z), C6CellAlignments.ZY),
-                        ((x + 1, y, z), C6CellAlignments.XZ)
+                        ((x + 1, y, z), C6CellOrientations.ZY),
+                        ((x + 1, y, z), C6CellOrientations.XZ)
                     ],
                     [
-                        ((x, y, z + 1), C6CellAlignments.ZX),
-                        ((x, y, z + 1), C6CellAlignments.XY)
+                        ((x, y, z + 1), C6CellOrientations.ZX),
+                        ((x, y, z + 1), C6CellOrientations.XY)
                     ],
                     [
-                        ((x + 1, y, z + 1), C6CellAlignments.ZX),
-                        ((x + 1, y, z + 1), C6CellAlignments.XZ)
+                        ((x + 1, y, z + 1), C6CellOrientations.ZX),
+                        ((x + 1, y, z + 1), C6CellOrientations.XZ)
                     ]]
         assert a == 2
         assert x < self._x_length - 1
         assert y < self._y_length - 1
         return [[
-                    ((x, y, z), C6CellAlignments.YZ),
-                    ((x, y, z), C6CellAlignments.XZ)
+                    ((x, y, z), C6CellOrientations.YZ),
+                    ((x, y, z), C6CellOrientations.XZ)
                 ],
                 [
-                    ((x + 1, y, z), C6CellAlignments.YZ),
-                    ((x + 1, y, z), C6CellAlignments.XY)
+                    ((x + 1, y, z), C6CellOrientations.YZ),
+                    ((x + 1, y, z), C6CellOrientations.XY)
                 ],
                 [
-                    ((x, y + 1, z), C6CellAlignments.YX),
-                    ((x, y + 1, z), C6CellAlignments.XZ)
+                    ((x, y + 1, z), C6CellOrientations.YX),
+                    ((x, y + 1, z), C6CellOrientations.XZ)
                 ],
                 [
-                    ((x + 1, y + 1, z), C6CellAlignments.YX),
-                    ((x + 1, y + 1, z), C6CellAlignments.XY)
+                    ((x + 1, y + 1, z), C6CellOrientations.YX),
+                    ((x + 1, y + 1, z), C6CellOrientations.XY)
                 ]]
 
     def save_to_file(self, path):

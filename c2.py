@@ -3,12 +3,12 @@ from dislocation_structure import Lattice
 class C2Lattice(Lattice):
     def __init__(self, x_length, y_length, z_length):
         super().__init__(x_length, y_length, z_length)
-        self._alignments = [0, 1, 2]
+        self._orientations = [0, 1, 2]
 
-    def cell_alignments(self):
-        return self._alignments
+    def cell_orientations(self):
+        return self._orientations
 
-    def edge_adjacent_alignment_blocks(self, edge):
+    def edge_adjacent_orientation_blocks(self, edge):
         x, y, z, a = edge
         if a == 0:
             assert y < self._y_length - 1
