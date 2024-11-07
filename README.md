@@ -1,4 +1,4 @@
-This program generates a random material of the C2 or C6 class, as defined in the associated manuscript. The material has a given dislocation density, or probability of having a dislocation at any given grid point. The program then attempts to find a realization of the material using a SAT solver. Here, we include instructions for installing and running the program.
+This program generates a random material of the C2 or C6 class, as defined in the associated manuscript. The material has a given defect density, or probability of having a defect at any given grid point. The program then attempts to find a realization of the material using a SAT solver. Here, we include instructions for installing and running the program.
 
 ## Requirements
 The program requires Python and git.
