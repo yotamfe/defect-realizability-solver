@@ -12,8 +12,8 @@ pip install python-sat[aiger,approxmc,cryptosat,pblib]
 ## Usage
 First, get the code:
 ```
-git clone https://github.com/yotamfe/grid-dislocation-py-sat-solver
-cd grid-dislocation-py-sat-solver
+git clone https://github.com/yotamfe/defect-realizability-solver
+cd defect-realizability-solver
 ```
 Below are several possible usages.
 
